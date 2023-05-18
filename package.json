@@ -11,6 +11,8 @@
   "dependencies": {
     "@react-three/drei": "^9.68.3",
     "@react-three/fiber": "^8.13.0",
+    "@splinetool/loader": "^0.9.336",
+    "@splinetool/r3f-spline": "^1.0.2",
     "@types/node": "20.2.1",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
