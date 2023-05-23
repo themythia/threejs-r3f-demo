@@ -1,7 +1,7 @@
 import useSpline from '@splinetool/r3f-spline';
-import { useScroll } from '@react-three/drei';
+import { BakeShadows, useScroll } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function SplineScene() {
@@ -12,6 +12,7 @@ export default function SplineScene() {
   const [positionX, setPositionX] = useState(100);
   const [positionY, setPositionY] = useState(3);
   const [positionZ, setPositionZ] = useState(-150);
+  const directionalLight = useRef<THREE.DirectionalLight>();
 
   const { nodes } = useSpline(
     'https://prod.spline.design/mCO5CWpmPD-hsfyN/scene.splinecode'
@@ -141,16 +142,27 @@ export default function SplineScene() {
     }
   });
 
+  useEffect(() => {
+    if (directionalLight && directionalLight.current) {
+      directionalLight.current.shadow.camera.near = 200;
+      directionalLight.current.shadow.camera.far = 520;
+      directionalLight.current.shadow.camera.top = 50;
+      directionalLight.current.shadow.camera.bottom = -200;
+      directionalLight.current.shadow.camera.left = -300;
+      directionalLight.current.shadow.camera.right = 50;
+    }
+  }, []);
+
   return (
     <>
       <group
         rotation={[rotationX, rotationY, rotationZ]}
         position={[positionX, positionY, positionZ]}
       >
-        {/* <BakeShadows /> */}
+        <BakeShadows />
         <primitive object={nodes.group} position={[0, Math.PI / 2, 0]} />
         <primitive object={nodes['Default Ambient Light']} />
-        <primitive object={nodes['Directional Light']} />
+        <primitive object={nodes['Directional Light']} ref={directionalLight} />
         <primitive object={nodes['Point Light']} />
         <primitive object={nodes['Point Light 2']} />
         <primitive object={nodes['Spot Light']} />
