@@ -1,5 +1,6 @@
 import { OrthographicCamera, ScrollControls } from '@react-three/drei';
 import Room from './Room';
+import Slide from './Slide';
 
 export default function Scene() {
   return (
@@ -7,6 +8,7 @@ export default function Scene() {
       <color attach='background' args={['#ffdc5f']} />
       <OrthographicCamera makeDefault zoom={7.5} position-z={300} />
       <Room />
+      <Slide />
     </ScrollControls>
   );
 }
