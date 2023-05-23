@@ -26,7 +26,6 @@ export default function Slide() {
 
   return (
     <Scroll html>
-      {/* DOM contents in here will scroll along */}
       <div className='w-screen absolute z-10 flex flex-col h-[calc(200vh)]'>
         <div
           className='flex flex-col gap-y-7 w-1/2 relative left-0 px-40 top-[calc(33vh)] opacity-0 transition-all duration-500'
