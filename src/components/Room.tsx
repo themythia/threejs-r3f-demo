@@ -5,48 +5,42 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export default function SplineScene() {
-  const [page, setPage] = useState<string>('third');
-  const [rotationX, setRotationX] = useState(Math.PI / 24);
-  const [rotationY, setRotationY] = useState(-Math.PI / 2);
-  const [rotationZ, setRotationZ] = useState(0);
-  const [positionX, setPositionX] = useState(100);
-  const [positionY, setPositionY] = useState(3);
-  const [positionZ, setPositionZ] = useState(-150);
+  const [page, setPage] = useState<string>('first');
   const directionalLight = useRef<THREE.DirectionalLight>();
+  const scroll = useScroll();
+  const state = useThree();
 
   const { nodes } = useSpline(
     'https://prod.spline.design/mCO5CWpmPD-hsfyN/scene.splinecode'
   );
-  const scroll = useScroll();
-  const state = useThree();
 
-  const modelState = {
+  const cameraState = {
     first: {
       rotation: {
-        x: Math.PI / 24,
-        y: -Math.PI / 2,
-        z: 0,
+        x: -0.108,
+        y: 0.018,
+        z: 0.002,
       },
-      position: { x: 100, y: 3, z: -150 },
-      zoom: 7.5,
+      position: { x: -57.401, y: 76.103, z: 131.121 },
+      zoom: 12.526,
     },
     second: {
       rotation: {
-        x: Math.PI / 24,
-        y: -Math.PI / 12,
-        z: 0,
+        x: -0.569,
+        y: -1.296,
+        z: -0.551,
       },
-      position: { x: -80, y: 0, z: -100 },
-      zoom: 7.5,
+      position: { x: -92.09, y: 77.086, z: 81.542 },
+      zoom: 14.862,
     },
     third: {
       rotation: {
-        x: 0.59,
-        y: -2.08,
-        z: 0,
+        x: -0.944,
+        y: 0.466,
+        z: 0.556,
       },
-      position: { x: -40, y: -55, z: 0 },
-      zoom: 12.4,
+      position: { x: 145.38, y: 260.129, z: 21.044 },
+      zoom: 24.822,
     },
   };
 
@@ -58,87 +52,50 @@ export default function SplineScene() {
       return THREE.MathUtils.lerp(x, y, scroll.offset / 0.5);
     };
 
+    const handleFirst = () => {
+      const { first, second } = cameraState;
+      return {
+        rx: handleLerp(first.rotation.x, second.rotation.x),
+        ry: handleLerp(first.rotation.y, second.rotation.y),
+        rz: handleLerp(first.rotation.z, second.rotation.z),
+        px: handleLerp(first.position.x, second.position.x),
+        py: handleLerp(first.position.y, second.position.y),
+        pz: handleLerp(first.position.z, second.position.z),
+        zoom: handleLerp(first.zoom, second.zoom),
+      };
+    };
+
+    const handleSecond = () => {
+      const { third, second } = cameraState;
+      return {
+        rx: handleLerp(second.rotation.x, third.rotation.x),
+        ry: handleLerp(second.rotation.y, third.rotation.y),
+        rz: handleLerp(second.rotation.z, third.rotation.z),
+        px: handleLerp(second.position.x, third.position.x),
+        py: handleLerp(second.position.y, third.position.y),
+        pz: handleLerp(second.position.z, third.position.z),
+        zoom: handleLerp(second.zoom, third.zoom),
+      };
+    };
+
+    const handleCamera = (values: Record<string, number>) => {
+      const { rx, ry, rz, px, py, pz, zoom } = values;
+      state.camera.position.set(px, py, pz);
+      state.camera.rotation.set(rx, ry, rz);
+      state.camera.zoom = zoom;
+      state.camera.updateProjectionMatrix();
+    };
+
     if (scroll.offset >= 0.99) setPage('third');
     else if (scroll.offset > 0.5) setPage('second');
     else setPage('first');
 
     if (page === 'first') {
-      const rX = handleLerp(
-        modelState.first.rotation.x,
-        modelState.second.rotation.x
-      );
-      const rY = handleLerp(
-        modelState.first.rotation.y,
-        modelState.second.rotation.y
-      );
-
-      const rZ = handleLerp(
-        modelState.first.rotation.z,
-        modelState.second.rotation.z
-      );
-
-      const pX = handleLerp(
-        modelState.first.position.x,
-        modelState.second.position.x
-      );
-      const pY = handleLerp(
-        modelState.first.position.y,
-        modelState.second.position.y
-      );
-
-      const pZ = handleLerp(
-        modelState.first.position.z,
-        modelState.second.position.z
-      );
-
-      setRotationX(rX);
-      setRotationY(rY);
-      setRotationZ(rZ);
-
-      setPositionX(pX);
-      setPositionY(pY);
-      setPositionZ(pZ);
+      const values = handleFirst();
+      handleCamera(values);
     } else if (page === 'second') {
-      const rX = handleLerp(
-        modelState.second.rotation.x,
-        modelState.third.rotation.x
-      );
-      const rY = handleLerp(
-        modelState.second.rotation.y,
-        modelState.third.rotation.y
-      );
-
-      const rZ = handleLerp(
-        modelState.second.rotation.z,
-        modelState.third.rotation.z
-      );
-
-      const pX = handleLerp(
-        modelState.second.position.x,
-        modelState.third.position.x
-      );
-      const pY = handleLerp(
-        modelState.second.position.y,
-        modelState.third.position.y
-      );
-
-      const pZ = handleLerp(
-        modelState.second.position.z,
-        modelState.third.position.z
-      );
-
-      const newZoom = handleLerp(modelState.second.zoom, modelState.third.zoom);
-
-      setRotationX(rX);
-      setRotationY(rY);
-      setRotationZ(rZ);
-
-      setPositionX(pX);
-      setPositionY(pY);
-      setPositionZ(pZ);
-
-      state.camera.zoom = newZoom;
-      state.camera.updateProjectionMatrix();
+      const values = handleSecond();
+      handleCamera(values);
     }
   });
 
@@ -155,12 +112,9 @@ export default function SplineScene() {
 
   return (
     <>
-      <group
-        rotation={[rotationX, rotationY, rotationZ]}
-        position={[positionX, positionY, positionZ]}
-      >
+      <group rotation-y={-Math.PI / 2}>
         <BakeShadows />
-        <primitive object={nodes.group} position={[0, Math.PI / 2, 0]} />
+        <primitive object={nodes.group} />
         <primitive object={nodes['Default Ambient Light']} />
         <primitive object={nodes['Directional Light']} ref={directionalLight} />
         <primitive object={nodes['Point Light']} />
