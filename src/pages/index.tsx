@@ -5,7 +5,7 @@ import Logo from '@/components/Logo';
 
 export default function Home() {
   return (
-    <main className={`w-full h-screen`}>
+    <main className='w-full h-screen bg-[#ffdc5f]'>
       <Logo />
       <Canvas flat linear>
         <Perf position='bottom-left' />

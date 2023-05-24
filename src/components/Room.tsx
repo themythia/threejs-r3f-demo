@@ -1,8 +1,9 @@
 import useSpline from '@splinetool/r3f-spline';
-import { BakeShadows, useScroll } from '@react-three/drei';
+import { BakeShadows, Html, Point, useScroll } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import Pin from './Pin';
 
 export default function SplineScene() {
   const [page, setPage] = useState<string>('first');
@@ -120,6 +121,10 @@ export default function SplineScene() {
         <primitive object={nodes['Point Light']} />
         <primitive object={nodes['Point Light 2']} />
         <primitive object={nodes['Spot Light']} />
+
+        <Pin position={[-65, 70, 20]} />
+        <Pin position={[28, 78, -93]} />
+        <Pin position={[-85, 105, -55]} />
       </group>
     </>
   );

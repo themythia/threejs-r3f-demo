@@ -1,6 +1,6 @@
-import { Scroll, useScroll } from '@react-three/drei';
+import { Html, Scroll, useScroll } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from './Card';
 
 export default function Slide() {
@@ -14,9 +14,15 @@ export default function Slide() {
     else setPage('third');
   });
 
+  useEffect(() => {
+    if (scrollHook && scrollHook.el) {
+      scrollHook.el.style.zIndex = '20';
+    }
+  }, []);
+
   return (
     <Scroll html>
-      <div className='w-screen absolute z-10 flex flex-col h-[calc(200vh)]'>
+      <div className='isolate w-screen absolute z-50 flex flex-col h-[calc(200vh)]'>
         <Card type='first' visible={page === 'first'} />
         <Card type='second' visible={page === 'second'} />
         <Card type='third' visible={page === 'third'} />

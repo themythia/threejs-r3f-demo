@@ -16,7 +16,7 @@ export default function Card({ type, visible }: CardProps) {
   return (
     <div
       className={classnames(
-        'flex flex-col items-center gap-y-7 w-1/2 relative transition-all duration-500',
+        'flex flex-col items-center gap-y-7 w-1/2 relative transition-all duration-500 z-50',
         {
           'left-0 top-[calc(33vh)]': type === 'first',
           'right-0 left-1/2 top-[calc(50vh)]': type === 'second',
