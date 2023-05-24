@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import Pin from './Pin';
+import useWindowSize from '@/utils/useWindowSize';
 
 export default function SplineScene() {
   const [page, setPage] = useState<string>('first');
@@ -15,37 +16,93 @@ export default function SplineScene() {
     'https://prod.spline.design/mCO5CWpmPD-hsfyN/scene.splinecode'
   );
 
-  const cameraState = {
-    first: {
-      rotation: {
-        x: -0.108,
-        y: 0.018,
-        z: 0.002,
+  interface IValue {
+    rotation: {
+      x: number;
+      y: number;
+      z: number;
+    };
+    position: {
+      x: number;
+      y: number;
+      z: number;
+    };
+    zoom: number;
+  }
+  type CameraStateType = Record<
+    string,
+    { first: IValue; second: IValue; third: IValue }
+  >;
+
+  const cameraState: CameraStateType = {
+    desktop: {
+      first: {
+        rotation: {
+          x: -0.108,
+          y: 0.018,
+          z: 0.002,
+        },
+        position: { x: -57.401, y: 76.103, z: 131.121 },
+        zoom: 12.526,
       },
-      position: { x: -57.401, y: 76.103, z: 131.121 },
-      zoom: 12.526,
+      second: {
+        rotation: {
+          x: -0.569,
+          y: -1.296,
+          z: -0.551,
+        },
+        position: { x: -92.09, y: 77.086, z: 81.542 },
+        zoom: 14.862,
+      },
+      third: {
+        rotation: {
+          x: -0.944,
+          y: 0.466,
+          z: 0.556,
+        },
+        position: { x: 145.38, y: 260.129, z: 21.044 },
+        zoom: 24.822,
+      },
     },
-    second: {
-      rotation: {
-        x: -0.569,
-        y: -1.296,
-        z: -0.551,
+    mobile: {
+      first: {
+        rotation: {
+          x: -0.253,
+          y: -0.057,
+          z: -0.014,
+        },
+        position: { x: -15.066, y: 30.844, z: 85.564 },
+        zoom: 4,
       },
-      position: { x: -92.09, y: 77.086, z: 81.542 },
-      zoom: 14.862,
-    },
-    third: {
-      rotation: {
-        x: -0.944,
-        y: 0.466,
-        z: 0.556,
+      second: {
+        rotation: {
+          x: -0.726,
+          y: -1.125,
+          z: -0.676,
+        },
+        position: { x: -53.957, y: 38.595, z: 61.758 },
+        zoom: 4.5,
       },
-      position: { x: 145.38, y: 260.129, z: 21.044 },
-      zoom: 24.822,
+      third: {
+        rotation: {
+          x: -1.016,
+          y: 0.251,
+          z: 0.382,
+        },
+        position: { x: 76.299, y: 141.336, z: -36.072 },
+        zoom: 7,
+      },
     },
   };
 
+  const width = useWindowSize();
+
   useFrame(() => {
+    const handleScreen = () => {
+      if (!width) return 'desktop';
+      if (width >= 768) return 'desktop';
+      else return 'mobile';
+    };
     const handleLerp = (x: number, y: number): number => {
       if (page !== 'first') {
         return THREE.MathUtils.lerp(x, y, (scroll.offset - 0.5) / 0.5);
@@ -54,7 +111,8 @@ export default function SplineScene() {
     };
 
     const handleFirst = () => {
-      const { first, second } = cameraState;
+      const screen = handleScreen();
+      const { first, second } = cameraState[screen];
       return {
         rx: handleLerp(first.rotation.x, second.rotation.x),
         ry: handleLerp(first.rotation.y, second.rotation.y),
@@ -67,7 +125,8 @@ export default function SplineScene() {
     };
 
     const handleSecond = () => {
-      const { third, second } = cameraState;
+      const screen = handleScreen();
+      const { third, second } = cameraState[screen];
       return {
         rx: handleLerp(second.rotation.x, third.rotation.x),
         ry: handleLerp(second.rotation.y, third.rotation.y),

@@ -1,3 +1,4 @@
+import useWindowSize from '@/utils/useWindowSize';
 import { useScroll } from '@react-three/drei';
 import classnames from 'classnames';
 
@@ -14,13 +15,22 @@ const content = {
 
 export default function Button({ type, active }: ButtonProps) {
   const scroll = useScroll();
+  const width = useWindowSize();
 
   const handleScroll = () => {
-    const height = scroll.el.scrollHeight;
-    const padding = height / 3 / 3;
-    if (type === 'first') scroll.el.scrollTo(0, 0);
-    else if (type === 'second') scroll.el.scrollTo(0, height / 2 - padding);
-    else if (type === 'third') scroll.el.scrollTo(0, height);
+    if (!width) return;
+    if (width >= 768) {
+      const height = scroll.el.scrollHeight;
+      const padding = height / 3 / 3;
+      if (type === 'first') scroll.el.scrollTo(0, 0);
+      else if (type === 'second') scroll.el.scrollTo(0, height / 2 - padding);
+      else if (type === 'third') scroll.el.scrollTo(0, height);
+    } else {
+      const scrollWidth = scroll.el.scrollWidth;
+      if (type === 'first') scroll.el.scrollTo(0, 0);
+      else if (type === 'second') scroll.el.scrollTo(scrollWidth * 0.37, 0);
+      else if (type === 'third') scroll.el.scrollTo(scrollWidth, 0);
+    }
   };
 
   return (

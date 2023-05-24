@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { Perf } from 'r3f-perf';
 import Scene from '@/components/Scene';
 import Logo from '@/components/Logo';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   return (
