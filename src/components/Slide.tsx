@@ -22,7 +22,7 @@ export default function Slide() {
 
   return (
     <Scroll html>
-      <div className='w-[calc(300vw)] h-[calc(50vh)] flex-row mt-[calc(50vh)] md:mt-0 bg-[#FFDB5F] md:bg-transparent md:w-screen absolute z-50 flex md:flex-col md:h-[calc(200vh)]'>
+      <div className='w-[calc(300vw)] h-[calc(50vh)] flex-row mt-[calc(50vh)] md:mt-0 bg-[#FFDB5F] md:bg-transparent md:w-screen absolute z-50 flex md:flex-col md:h-[calc(200vh)] md:gap-y-[10vh] md:pt-[20vh]'>
         <Card type='first' visible={page === 'first'} />
         <Card type='second' visible={page === 'second'} />
         <Card type='third' visible={page === 'third'} />

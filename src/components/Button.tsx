@@ -23,7 +23,7 @@ export default function Button({ type, active }: ButtonProps) {
       const height = scroll.el.scrollHeight;
       const padding = height / 3 / 3;
       if (type === 'first') scroll.el.scrollTo(0, 0);
-      else if (type === 'second') scroll.el.scrollTo(0, height / 2 - padding);
+      else if (type === 'second') scroll.el.scrollTo(0, height * 0.4);
       else if (type === 'third') scroll.el.scrollTo(0, height);
     } else {
       const scrollWidth = scroll.el.scrollWidth;
