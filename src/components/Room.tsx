@@ -181,9 +181,9 @@ export default function SplineScene() {
         <primitive object={nodes['Point Light 2']} />
         <primitive object={nodes['Spot Light']} />
 
-        <Pin position={[-65, 70, 20]} />
-        <Pin position={[18, 78, -93]} />
-        <Pin position={[-85, 105, -50]} />
+        <Pin position={[-65, 70, 20]} type='first' />
+        <Pin position={[18, 78, -93]} type='second' />
+        <Pin position={[-85, 105, -50]} type='third' />
       </group>
     </>
   );
