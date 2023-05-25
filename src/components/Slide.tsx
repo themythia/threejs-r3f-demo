@@ -1,4 +1,4 @@
-import { Html, Scroll, useScroll } from '@react-three/drei';
+import { Scroll, useScroll } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useState } from 'react';
 import Card from './Card';

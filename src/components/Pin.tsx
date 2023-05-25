@@ -1,6 +1,7 @@
 import { Html } from '@react-three/drei';
 import { Vector3, useThree } from '@react-three/fiber';
 import { useRef } from 'react';
+import { useControls } from 'leva';
 
 interface PinProps {
   position: Vector3;
@@ -17,13 +18,17 @@ export default function Pin({ position, type }: PinProps) {
     }
   };
 
+  const { showMesh } = useControls('Pins', {
+    showMesh: false,
+  });
+
   return (
     <mesh
       position={position}
       scale={type === 'third' ? 5 : 9}
       onPointerOver={() => handleHover('enter')}
       onPointerLeave={() => handleHover('leave')}
-      visible={false}
+      visible={showMesh}
     >
       <sphereBufferGeometry />
       <meshBasicMaterial />

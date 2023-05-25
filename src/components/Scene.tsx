@@ -7,6 +7,7 @@ import Room from './Room';
 import Slide from './Slide';
 import useWindowSize from '@/utils/useWindowSize';
 import { useMemo } from 'react';
+import { useControls } from 'leva';
 
 export default function Scene() {
   const width = useWindowSize();
@@ -16,6 +17,10 @@ export default function Scene() {
     return false;
   }, [width]);
 
+  const { showOrbitControls } = useControls('Orbit Controls', {
+    showOrbitControls: false,
+  });
+
   return (
     <ScrollControls
       pages={2}
@@ -24,10 +29,14 @@ export default function Scene() {
       horizontal={handleDirection}
     >
       {/* <color attach='background' args={['#ffdc5f']} /> */}
-      <OrthographicCamera zoom={7.5} position-z={300} makeDefault />
-      <Room />
+      <OrthographicCamera
+        zoom={7.5}
+        position-z={300}
+        makeDefault={!showOrbitControls}
+      />
+      <Room showOrbitControls={showOrbitControls} />
       <Slide />
-      {/* <CameraControls makeDefault /> */}
+      {showOrbitControls && <CameraControls makeDefault />}
     </ScrollControls>
   );
 }

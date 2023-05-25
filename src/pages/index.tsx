@@ -1,15 +1,14 @@
 import { Canvas } from '@react-three/fiber';
-import { Perf } from 'r3f-perf';
 import Scene from '@/components/Scene';
 import Logo from '@/components/Logo';
-import { useEffect, useState } from 'react';
+import { Leva } from 'leva';
 
 export default function Home() {
   return (
     <main className='w-full h-screen bg-[#ffdc5f]'>
+      <Leva hidden />
       <Logo />
       <Canvas flat linear>
-        <Perf position='bottom-left' />
         <Scene />
       </Canvas>
     </main>

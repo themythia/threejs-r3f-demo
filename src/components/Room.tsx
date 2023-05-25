@@ -5,8 +5,14 @@ import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import Pin from './Pin';
 import useWindowSize from '@/utils/useWindowSize';
+import { cameraState } from '@/utils/cameraState';
+import { button, useControls } from 'leva';
 
-export default function SplineScene() {
+export default function SplineScene({
+  showOrbitControls,
+}: {
+  showOrbitControls: boolean;
+}) {
   const [page, setPage] = useState<string>('first');
   const directionalLight = useRef<THREE.DirectionalLight>();
   const scroll = useScroll();
@@ -15,89 +21,60 @@ export default function SplineScene() {
   const { nodes } = useSpline(
     'https://prod.spline.design/mCO5CWpmPD-hsfyN/scene.splinecode'
   );
-
-  interface IValue {
-    rotation: {
-      x: number;
-      y: number;
-      z: number;
-    };
-    position: {
-      x: number;
-      y: number;
-      z: number;
-    };
-    zoom: number;
-  }
-  type CameraStateType = Record<
-    string,
-    { first: IValue; second: IValue; third: IValue }
-  >;
-
-  const cameraState: CameraStateType = {
-    desktop: {
-      first: {
-        rotation: {
-          x: -0.108,
-          y: 0.018,
-          z: 0.002,
-        },
-        position: { x: -57.401, y: 76.103, z: 131.121 },
-        zoom: 12.526,
-      },
-      second: {
-        rotation: {
-          x: -0.569,
-          y: -1.296,
-          z: -0.551,
-        },
-        position: { x: -92.09, y: 77.086, z: 81.542 },
-        zoom: 14.862,
-      },
-      third: {
-        rotation: {
-          x: -0.944,
-          y: 0.466,
-          z: 0.556,
-        },
-        position: { x: 145.38, y: 260.129, z: 21.044 },
-        zoom: 24.822,
-      },
-    },
-    mobile: {
-      first: {
-        rotation: {
-          x: -0.253,
-          y: -0.057,
-          z: -0.014,
-        },
-        position: { x: -15.066, y: 30.844, z: 85.564 },
-        zoom: 4,
-      },
-      second: {
-        rotation: {
-          x: -0.726,
-          y: -1.125,
-          z: -0.676,
-        },
-        position: { x: -53.957, y: 38.595, z: 61.758 },
-        zoom: 4.5,
-      },
-      third: {
-        rotation: {
-          x: -1.016,
-          y: 0.251,
-          z: 0.382,
-        },
-        position: { x: 76.299, y: 141.336, z: -36.072 },
-        zoom: 7,
-      },
-    },
-  };
+  console.log('nodes', nodes);
 
   const width = useWindowSize();
 
+  const shadowControls = useControls('shadows', {
+    pointLight: true,
+    pointLight2: true,
+    spotLight: true,
+    dirLight: true,
+  });
+
+  const pointLightControls = useControls('Point Light', {
+    visible: true,
+    position: {
+      value: {
+        x: nodes['Point Light'].position.x,
+        y: nodes['Point Light'].position.y,
+        z: nodes['Point Light'].position.z,
+      },
+      step: 1,
+    },
+    intensity: nodes['Point Light'].intensity,
+    color: {
+      value: {
+        r: nodes['Point Light'].color.r * 255,
+        g: nodes['Point Light'].color.g * 255,
+        b: nodes['Point Light'].color.b * 255,
+      },
+    },
+  });
+
+  const pointLight2Controls = useControls('Point Light 2', {
+    visible: true,
+    position: {
+      value: {
+        x: nodes['Point Light 2'].position.x,
+        y: nodes['Point Light 2'].position.y,
+        z: nodes['Point Light 2'].position.z,
+      },
+      step: 1,
+    },
+    intensity: nodes['Point Light 2'].intensity,
+    color: {
+      value: {
+        r: nodes['Point Light 2'].color.r * 255,
+        g: nodes['Point Light 2'].color.g * 255,
+        b: nodes['Point Light 2'].color.b * 255,
+      },
+    },
+  });
+
   useFrame(() => {
+    if (showOrbitControls) return;
+
     const handleScreen = () => {
       if (!width) return 'desktop';
       if (width >= 768) return 'desktop';
@@ -176,10 +153,39 @@ export default function SplineScene() {
         <BakeShadows />
         <primitive object={nodes.group} />
         <primitive object={nodes['Default Ambient Light']} />
-        <primitive object={nodes['Directional Light']} ref={directionalLight} />
-        <primitive object={nodes['Point Light']} />
-        <primitive object={nodes['Point Light 2']} />
-        <primitive object={nodes['Spot Light']} />
+        <primitive
+          object={nodes['Directional Light']}
+          ref={directionalLight}
+          castShadow={shadowControls.dirLight}
+        />
+        <primitive
+          object={nodes['Point Light']}
+          castShadow={shadowControls.pointLight}
+          visible={pointLightControls.visible}
+          position={[
+            pointLightControls.position.x,
+            pointLightControls.position.y,
+            pointLightControls.position.z,
+          ]}
+          intensity={pointLightControls.intensity}
+          color={`rgb(${pointLightControls.color.r},${pointLightControls.color.g},${pointLightControls.color.b})`}
+        />
+        <primitive
+          object={nodes['Point Light 2']}
+          castShadow={shadowControls.pointLight2}
+          visible={pointLight2Controls.visible}
+          position={[
+            pointLight2Controls.position.x,
+            pointLight2Controls.position.y,
+            pointLight2Controls.position.z,
+          ]}
+          intensity={pointLight2Controls.intensity}
+          color={`rgb(${pointLight2Controls.color.r},${pointLight2Controls.color.g},${pointLight2Controls.color.b})`}
+        />
+        <primitive
+          object={nodes['Spot Light']}
+          castShadow={shadowControls.spotLight}
+        />
 
         <Pin position={[-65, 70, 20]} type='first' />
         <Pin position={[18, 78, -93]} type='second' />
