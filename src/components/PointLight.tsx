@@ -39,7 +39,7 @@ export default function PointLight({ object, name }: PointLightProps) {
     <>
       <primitive
         object={object}
-        castShadow={shadowControls.pointLight}
+        castShadow={shadowControls[name]}
         visible={pointLightControls.visible}
         position={[
           pointLightControls.position.x,

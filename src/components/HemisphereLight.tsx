@@ -46,7 +46,7 @@ export default function HemisphereLight({ object }: HemisphereLightProps) {
           hemisphereLightControls.position.y,
           hemisphereLightControls.position.z,
         ]}
-        skyColor={`rgb(${hemisphereLightControls.skyColor.r},${hemisphereLightControls.skyColor.g},${hemisphereLightControls.skyColor.b})`}
+        color={`rgb(${hemisphereLightControls.skyColor.r},${hemisphereLightControls.skyColor.g},${hemisphereLightControls.skyColor.b})`}
         groundColor={`rgb(${hemisphereLightControls.groundColor.r},${hemisphereLightControls.groundColor.g},${hemisphereLightControls.groundColor.b})`}
         intensity={hemisphereLightControls.intensity}
       />

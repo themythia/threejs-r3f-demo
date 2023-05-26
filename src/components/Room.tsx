@@ -1,7 +1,7 @@
 import useSpline from '@splinetool/r3f-spline';
 import { BakeShadows, useScroll } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import Pin from './Pin';
 import useWindowSize from '@/utils/useWindowSize';
@@ -16,7 +16,6 @@ export default function SplineScene({
 }: {
   showOrbitControls: boolean;
 }) {
-  const [page, setPage] = useState<string>('first');
   const directionalLight = useRef<THREE.DirectionalLight>();
   const scroll = useScroll();
   const state = useThree();
@@ -28,6 +27,7 @@ export default function SplineScene({
   const width = useWindowSize();
 
   useFrame(() => {
+    let page = 'first';
     if (showOrbitControls) return;
 
     const handleScreen = () => {
@@ -78,9 +78,9 @@ export default function SplineScene({
       state.camera.updateProjectionMatrix();
     };
 
-    if (scroll.offset >= 0.99) setPage('third');
-    else if (scroll.offset > 0.5) setPage('second');
-    else setPage('first');
+    if (scroll.offset >= 0.99) page = 'third';
+    else if (scroll.offset > 0.5) page = 'second';
+    else page = 'first';
 
     if (page === 'first') {
       const values = handleFirst();
