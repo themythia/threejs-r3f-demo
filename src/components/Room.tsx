@@ -9,6 +9,7 @@ import PointLight from './PointLight';
 import HemisphereLight from './HemisphereLight';
 import DirectionalLight from './DirectionalLight';
 import SpotLight from './SpotLight';
+import { button, useControls } from 'leva';
 
 export default function SplineScene({
   showOrbitControls,
@@ -87,6 +88,29 @@ export default function SplineScene({
       const values = handleSecond();
       handleCamera(values);
     }
+  });
+
+  const wireframe = useControls('Show Wireframes', {
+    showWireframes: button(() => {
+      state.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (child.material.length) {
+            child.material[0].wireframe = true;
+          }
+          child.material.wireframe = true;
+        }
+      });
+    }),
+    hideWireframes: button(() => {
+      state.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (child.material.length) {
+            child.material[0].wireframe = false;
+          }
+          child.material.wireframe = false;
+        }
+      });
+    }),
   });
 
   return (
