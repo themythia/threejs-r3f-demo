@@ -1,5 +1,7 @@
+import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useRef } from 'react';
+import { HemisphereLightHelper } from 'three';
 
 interface HemisphereLightProps {
   object: THREE.HemisphereLight;
@@ -7,6 +9,14 @@ interface HemisphereLightProps {
 
 export default function HemisphereLight({ object }: HemisphereLightProps) {
   const hemisphereLight = useRef<THREE.HemisphereLight>(null);
+  const helper = useRef<HemisphereLightHelper>(null);
+
+  useFrame(() => {
+    if (helper && helper.current && hemisphereLightControls.showHelper) {
+      helper.current.update();
+    }
+  });
+
   const hemisphereLightControls = useControls('ambientHemisphereLight', {
     visible: true,
     position: {
@@ -52,7 +62,10 @@ export default function HemisphereLight({ object }: HemisphereLightProps) {
       />
 
       {hemisphereLight.current && hemisphereLightControls.showHelper && (
-        <hemisphereLightHelper args={[hemisphereLight.current, 10]} />
+        <hemisphereLightHelper
+          args={[hemisphereLight.current, 10]}
+          ref={helper}
+        />
       )}
     </>
   );

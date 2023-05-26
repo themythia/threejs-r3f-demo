@@ -1,5 +1,7 @@
+import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useRef } from 'react';
+import { SpotLightHelper } from 'three';
 
 interface SpotLightProps {
   object: THREE.SpotLight;
@@ -7,6 +9,14 @@ interface SpotLightProps {
 
 export default function SpotLight({ object }: SpotLightProps) {
   const spotLight = useRef<THREE.SpotLight>(null);
+  const helper = useRef<SpotLightHelper>(null);
+
+  useFrame(() => {
+    if (helper && helper.current && spotLightcontrols.showHelper) {
+      helper.current.update();
+    }
+  });
+
   const spotLightcontrols = useControls('spotLight', {
     visible: true,
     position: {
@@ -58,6 +68,7 @@ export default function SpotLight({ object }: SpotLightProps) {
 
       {spotLight.current && spotLightcontrols.showHelper && (
         <spotLightHelper
+          ref={helper}
           args={[
             spotLight.current,
             `rgb(${spotLightcontrols.color.r},${spotLightcontrols.color.g},${spotLightcontrols.color.b})`,

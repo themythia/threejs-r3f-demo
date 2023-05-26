@@ -1,5 +1,7 @@
+import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useRef } from 'react';
+import { PointLightHelper } from 'three';
 
 interface PointLightProps {
   object: THREE.PointLight;
@@ -8,6 +10,14 @@ interface PointLightProps {
 
 export default function PointLight({ object, name }: PointLightProps) {
   const pointLight = useRef<THREE.PointLight>(null);
+  const helper = useRef<PointLightHelper>(null);
+
+  useFrame(() => {
+    if (helper && helper.current && pointLightControls.showHelper) {
+      helper.current.update();
+    }
+  });
+
   const pointLightControls = useControls(name, {
     visible: true,
     position: {
@@ -55,6 +65,7 @@ export default function PointLight({ object, name }: PointLightProps) {
 
       {pointLight.current && pointLightControls.showHelper && (
         <pointLightHelper
+          ref={helper}
           args={[
             pointLight.current,
             10,

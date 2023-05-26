@@ -17,8 +17,9 @@ export default function Scene() {
     return false;
   }, [width]);
 
-  const { showOrbitControls } = useControls('Orbit Controls', {
+  const { showOrbitControls, showAxesHelper } = useControls('Debugging', {
     showOrbitControls: false,
+    showAxesHelper: false,
   });
 
   return (
@@ -36,7 +37,7 @@ export default function Scene() {
       <Room showOrbitControls={showOrbitControls} />
       <Slide />
       {showOrbitControls && <CameraControls makeDefault />}
-      <axesHelper args={[500]} />
+      {showAxesHelper && <axesHelper args={[500]} />}
     </ScrollControls>
   );
 }

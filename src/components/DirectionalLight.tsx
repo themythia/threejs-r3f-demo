@@ -1,5 +1,7 @@
+import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useEffect, useRef } from 'react';
+import { DirectionalLightHelper } from 'three';
 
 interface DirectionalLightProps {
   object: THREE.DirectionalLight;
@@ -7,6 +9,14 @@ interface DirectionalLightProps {
 
 export default function DirectionalLight({ object }: DirectionalLightProps) {
   const directionalLight = useRef<THREE.DirectionalLight>(null);
+  const helper = useRef<DirectionalLightHelper>(null);
+
+  useFrame(() => {
+    if (helper && helper.current && directionalLightControls.showHelper) {
+      helper.current.update();
+    }
+  });
+
   const directionalLightControls = useControls('directionalLight', {
     visible: true,
     position: {
@@ -61,6 +71,7 @@ export default function DirectionalLight({ object }: DirectionalLightProps) {
 
       {directionalLight.current && directionalLightControls.showHelper && (
         <directionalLightHelper
+          ref={helper}
           args={[
             directionalLight.current,
             10,
