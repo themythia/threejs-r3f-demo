@@ -18,8 +18,9 @@ export default function Pin({ position, type }: PinProps) {
     }
   };
 
-  const { showMesh } = useControls('Pins', {
+  const { showMesh, showPins } = useControls('Pins', {
     showMesh: false,
+    showPins: true,
   });
 
   return (
@@ -32,7 +33,7 @@ export default function Pin({ position, type }: PinProps) {
     >
       <sphereBufferGeometry />
       <meshBasicMaterial />
-      {gl?.domElement?.parentNode && (
+      {gl?.domElement?.parentNode && showPins && (
         <Html
           portal={{ current: gl.domElement.parentNode as HTMLElement }}
           zIndexRange={[1, 0]}

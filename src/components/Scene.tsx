@@ -28,7 +28,6 @@ export default function Scene() {
       distance={2}
       horizontal={handleDirection}
     >
-      {/* <color attach='background' args={['#ffdc5f']} /> */}
       <OrthographicCamera
         zoom={7.5}
         position-z={300}
@@ -37,6 +36,7 @@ export default function Scene() {
       <Room showOrbitControls={showOrbitControls} />
       <Slide />
       {showOrbitControls && <CameraControls makeDefault />}
+      <axesHelper args={[500]} />
     </ScrollControls>
   );
 }

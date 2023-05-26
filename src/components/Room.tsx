@@ -1,12 +1,15 @@
 import useSpline from '@splinetool/r3f-spline';
-import { BakeShadows, Html, Point, useScroll } from '@react-three/drei';
+import { BakeShadows, useScroll } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import Pin from './Pin';
 import useWindowSize from '@/utils/useWindowSize';
 import { cameraState } from '@/utils/cameraState';
-import { button, useControls } from 'leva';
+import PointLight from './PointLight';
+import HemisphereLight from './HemisphereLight';
+import DirectionalLight from './DirectionalLight';
+import SpotLight from './SpotLight';
 
 export default function SplineScene({
   showOrbitControls,
@@ -21,56 +24,8 @@ export default function SplineScene({
   const { nodes } = useSpline(
     'https://prod.spline.design/mCO5CWpmPD-hsfyN/scene.splinecode'
   );
-  console.log('nodes', nodes);
 
   const width = useWindowSize();
-
-  const shadowControls = useControls('shadows', {
-    pointLight: true,
-    pointLight2: true,
-    spotLight: true,
-    dirLight: true,
-  });
-
-  const pointLightControls = useControls('Point Light', {
-    visible: true,
-    position: {
-      value: {
-        x: nodes['Point Light'].position.x,
-        y: nodes['Point Light'].position.y,
-        z: nodes['Point Light'].position.z,
-      },
-      step: 1,
-    },
-    intensity: nodes['Point Light'].intensity,
-    color: {
-      value: {
-        r: nodes['Point Light'].color.r * 255,
-        g: nodes['Point Light'].color.g * 255,
-        b: nodes['Point Light'].color.b * 255,
-      },
-    },
-  });
-
-  const pointLight2Controls = useControls('Point Light 2', {
-    visible: true,
-    position: {
-      value: {
-        x: nodes['Point Light 2'].position.x,
-        y: nodes['Point Light 2'].position.y,
-        z: nodes['Point Light 2'].position.z,
-      },
-      step: 1,
-    },
-    intensity: nodes['Point Light 2'].intensity,
-    color: {
-      value: {
-        r: nodes['Point Light 2'].color.r * 255,
-        g: nodes['Point Light 2'].color.g * 255,
-        b: nodes['Point Light 2'].color.b * 255,
-      },
-    },
-  });
 
   useFrame(() => {
     if (showOrbitControls) return;
@@ -148,49 +103,18 @@ export default function SplineScene({
   }, []);
 
   return (
-    <>
-      <group rotation-y={-Math.PI / 2}>
-        <BakeShadows />
-        <primitive object={nodes.group} />
-        <primitive object={nodes['Default Ambient Light']} />
-        <primitive
-          object={nodes['Directional Light']}
-          ref={directionalLight}
-          castShadow={shadowControls.dirLight}
-        />
-        <primitive
-          object={nodes['Point Light']}
-          castShadow={shadowControls.pointLight}
-          visible={pointLightControls.visible}
-          position={[
-            pointLightControls.position.x,
-            pointLightControls.position.y,
-            pointLightControls.position.z,
-          ]}
-          intensity={pointLightControls.intensity}
-          color={`rgb(${pointLightControls.color.r},${pointLightControls.color.g},${pointLightControls.color.b})`}
-        />
-        <primitive
-          object={nodes['Point Light 2']}
-          castShadow={shadowControls.pointLight2}
-          visible={pointLight2Controls.visible}
-          position={[
-            pointLight2Controls.position.x,
-            pointLight2Controls.position.y,
-            pointLight2Controls.position.z,
-          ]}
-          intensity={pointLight2Controls.intensity}
-          color={`rgb(${pointLight2Controls.color.r},${pointLight2Controls.color.g},${pointLight2Controls.color.b})`}
-        />
-        <primitive
-          object={nodes['Spot Light']}
-          castShadow={shadowControls.spotLight}
-        />
+    <group rotation={[0, -Math.PI / 2, 0]}>
+      <BakeShadows />
+      <primitive object={nodes.group} />
+      <HemisphereLight object={nodes['Default Ambient Light']} />
+      <DirectionalLight object={nodes['Directional Light']} />
+      <PointLight object={nodes['Point Light']} name='pointLight' />
+      <PointLight object={nodes['Point Light 2']} name='pointLight2' />
+      <SpotLight object={nodes['Spot Light']} />
 
-        <Pin position={[-65, 70, 20]} type='first' />
-        <Pin position={[18, 78, -93]} type='second' />
-        <Pin position={[-85, 105, -50]} type='third' />
-      </group>
-    </>
+      <Pin position={[-65, 70, 20]} type='first' />
+      <Pin position={[18, 78, -93]} type='second' />
+      <Pin position={[-85, 105, -50]} type='third' />
+    </group>
   );
 }
