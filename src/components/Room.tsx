@@ -1,7 +1,6 @@
 import useSpline from '@splinetool/r3f-spline';
 import { BakeShadows, useScroll } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import Pin from './Pin';
 import useWindowSize from '@/utils/useWindowSize';
@@ -16,7 +15,6 @@ export default function SplineScene({
 }: {
   showOrbitControls: boolean;
 }) {
-  const directionalLight = useRef<THREE.DirectionalLight>();
   const scroll = useScroll();
   const state = useThree();
 
@@ -90,17 +88,6 @@ export default function SplineScene({
       handleCamera(values);
     }
   });
-
-  useEffect(() => {
-    if (directionalLight && directionalLight.current) {
-      directionalLight.current.shadow.camera.near = 200;
-      directionalLight.current.shadow.camera.far = 520;
-      directionalLight.current.shadow.camera.top = 50;
-      directionalLight.current.shadow.camera.bottom = -200;
-      directionalLight.current.shadow.camera.left = -300;
-      directionalLight.current.shadow.camera.right = 50;
-    }
-  }, []);
 
   return (
     <group rotation={[0, -Math.PI / 2, 0]}>
